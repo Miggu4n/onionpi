@@ -1,0 +1,46 @@
+version: "3"
+services:
+  # Onionize for exposing a tor url
+  onionize:
+    container_name: onionize
+    image: torservers/onionize
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    networks:
+      - faraday
+    restart: unless-stopped
+
+  # Nginx to handle the requests
+  nginx:
+    container_name: nginx
+    image: nginx
+    environment:
+      - ONIONSERVICE_NAME=nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - faraday
+    depends_on:
+      - onionize
+    restart: unless-stopped
+
+  # Services
+  openspeedtest:
+    container_name: openspeedtest
+    image: openspeedtest/latest
+    networks:
+      faraday:
+        ipv4_address: 100.0.0.5
+    ports:
+      - 3000:3000
+    depends_on:
+      - onionize
+    restart: unless-stopped
+
+networks:
+  faraday:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 100.0.0.0/16
+          gateway: 100.0.0.1

@@ -1,10 +1,4 @@
-# pi-docker
-
-Questo repo contiene un docker compose yml che avvia dei servizi
-
-## Servizi
-
-- bitcoind: un nodo bitcoin
-- electrum: un server electrum
-
-Tra i vari servizi viene avviato anche onionize, serve ad esporre i vari servizi ad un endpoint .onion, in modo da rendere l'accesso possibile da remoto senza acquistare un dominio e, sopratutto, accedere sotto rete tor.
+1. Add services to the docker compose
+2. Edit nginx.conf to proxy your services
+3. run docker exec onionize cat /var/lib/tor/onion_services/nginx/hostname
+4. share your services through one unique url and exposing only port 80
